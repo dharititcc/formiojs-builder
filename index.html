@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./node_modules/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./node_modules/formiojs/dist/formio.full.min.css">
+    <link rel="stylesheet" href="./node_modules/@formio/contrib/dist/formio-contrib.css">
+
+    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="./node_modules/@formio/js/dist/formio.form.min.js"></script>
+    <script src="./node_modules/formiojs/dist/formio.full.min.js"></script>
+    <script src="./node_modules/@formio/js/dist/formio.full.js"></script>
+
+    <script src="section_break.js"></script>
+
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="formio"></div>
+    <div id="formio2"></div><br><br>
+
+    <label id="json"></label>
+    <button id="preview">Preview</button>
+
+    <script src="index.js"></script>
+    <script type="text/javascript">
+        // Formio.use(FormioContrib);
+
+        Formio.builder(document.getElementById('formio'), {}, {}).then(function (builder) {
+            builder.on('saveComponent', function () {
+                console.log(builder.schema);
+                $('#json').val(builder.schema);
+
+            });
+        });
+
+        $(document).on('click', '#preview', function (e) {
+
+            var json = $('#json').val();
+
+            Formio.createForm(document.getElementById('formio2'), json, {
+                // readOnly: true
+            }).then(function (form) {
+                form.submission = {
+                    data: {
+                        firstName: 'Joe',
+                        lastName: 'Smith'
+                    }
+                };
+                form.on('submit', (submission) => {
+                    console.log(submission);
+                    // submission.emit(true);
+                    console.log('The form was just submitted!!!');
+                });
+                form.on('change', function(changed) {
+                    console.log('Form was changed', changed);
+                });
+            })
+        });
+    </script>
+</body>
+</html>
