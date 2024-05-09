@@ -31,7 +31,7 @@
         // Formio.use(FormioContrib);
 
         Formio.builder(document.getElementById('formio'), {}, {}).then(function (builder) {
-            builder.on('saveComponent', function () {
+            builder.on('change', function () {
                 console.log(builder.schema);
                 $('#json').val(builder.schema);
 
