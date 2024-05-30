@@ -25,6 +25,8 @@
 
     <label id="json"></label>
     <button id="preview">Preview</button>
+    <button id="pdf">PDF</button>
+    <button id="preview_filled">preview_filled</button>
 
     <script src="index.js"></script>
     <script type="text/javascript">
@@ -34,14 +36,11 @@
             builder.on('change', function () {
                 console.log(builder.schema);
                 $('#json').val(builder.schema);
-
             });
         });
 
         $(document).on('click', '#preview', function (e) {
-
             var json = $('#json').val();
-
             Formio.createForm(document.getElementById('formio2'), json, {
                 // readOnly: true
             }).then(function (form) {
@@ -56,11 +55,71 @@
                     // submission.emit(true);
                     console.log('The form was just submitted!!!');
                 });
-                form.on('change', function(changed) {
+                form.on('change', function (changed) {
                     console.log('Form was changed', changed);
                 });
             })
         });
+
+        // Create PDF
+        $(document).on('click', '#pdf', function (e) {
+            var json = $('#json').val();
+            console.log(json);
+            Formio.createForm(document.getElementById('formio2'), json, {
+                readOnly: true,
+            })
+        });
+
+        $(document).on('click', '#preview_filled', function (e) {
+            const formSchema = {
+                "components": [{
+                        "type": "textfield",
+                        "label": "First Name",
+                        "key": "firstName",
+                        "input": true
+                    },
+                    {
+                        "type": "textfield",
+                        "label": "Last Name",
+                        "key": "lastName",
+                        "input": true
+                    },
+                    {
+                        "type": "email",
+                        "label": "Email",
+                        "key": "email",
+                        "input": true
+                    },
+                    {
+                        "type": "button",
+                        "action": "submit",
+                        "label": "Submit",
+                        "theme": "primary"
+                    }
+                ]
+            };
+
+            // Define the submission data
+            const submissionData = {
+                "data": {
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "email": "john.doe@example.com"
+                }
+            };
+            console.log(typeof submissionData);
+            // Create and render the form
+            Formio.createForm(document.getElementById('formio2'), formSchema, {
+                readOnly: true
+            }).then((form) => {
+                // Set the submission data
+                form.submission = submissionData;
+            }).catch((err) => {
+                console.error('Error loading form:', err);
+                alert('Error loading form: ' + err.message);
+            });
+        });
     </script>
 </body>
+
 </html>
